@@ -37,13 +37,9 @@ func main() {
 }
 
 func Download(filename string) int {
-	totalsize, progress := RandomeFileSize(), 0
+	totalsize := RandomeFileSize()
 	fmt.Printf("Downloading... %s(%dKB)\n", RandomFilename(), totalsize)
-	for {
-		progress = downloadProgress(totalsize, progress)
-		if progress >= totalsize {
-			break
-		}
+	for progress := 0; progress < totalsize; progress = downloadProgress(totalsize, progress) {
 		slpTime := time.Duration(rand.Int63n(maxDownloadDuration) * int64(time.Millisecond))
 		time.Sleep(slpTime)
 	}
@@ -109,10 +105,12 @@ func RandomFilename() string {
 }
 
 func randomVersion() string {
-	mejar := rand.Intn(maxMajorVersion)
-	miner := rand.Intn(maxMinorVersion)
-	patch := rand.Intn(maxPatchVersion)
-	return fmt.Sprintf("%d.%d.%d", mejar, miner, patch)
+	var (
+		major = rand.Intn(maxMajorVersion)
+		miner = rand.Intn(maxMinorVersion)
+		patch = rand.Intn(maxPatchVersion)
+	)
+	return fmt.Sprintf("%d.%d.%d", major, miner, patch)
 }
 
 var circles = []string{"-", "\\", "|", "/"}
